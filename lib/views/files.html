@@ -95,14 +95,15 @@
 
   <nav class="navbar navbar-default navbar-static-top">
     <div class="container">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="#">File Manager</a>
+      <div class="navbar-header" style="width:100%;">
+        <a class="navbar-brand" href="#">File Manager {{diskspace.free}} of {{diskspace.total}} remaining</a>
+	<p class="navbar-brand" href="#" style="margin-top:-3px;float:right;">Admin Password <input type="password" ng-model="FM.adminPwd"/></p>
       </div>
     </div>
   </nav>
 
   <div class="container">
-    <div class="btn-toolbar">
+    <div class="btn-toolbar" style="margin-bottom:10px;">
       <button type="button" class="btn btn-default" ng-disabled="FM.btnDisabled('download')" ng-click="FM.download()"><span class="glyphicon glyphicon-download"></span> Download</button>
       <button type="button" class="btn btn-default" ng-disabled="FM.btnDisabled('delete')" ng-click="FM.delete()"><span class="glyphicon glyphicon-remove"></span> Delete</button>
       <button type="button" class="btn btn-default" ng-disabled="FM.btnDisabled('move')" data-toggle="modal" data-target="#moveModal"><span class="glyphicon glyphicon-random"></span> Move</button>
@@ -121,17 +122,17 @@
         <tr class="sortable">
           <th><input type="checkbox" value="" ng-model="FM.selectAll"></th>
           <th>Type</th>
-          <th>Name</th>
+          <th>Name <input type="test" ng-model="searchString" style="margin:-10px 0 -10px 10px"/></th>
           <th>Size</th>
           <th>Time</th>
         </tr>
       </thead>
       <tbody>
-      <tr class="sortable" ng-repeat="file in FM.curFiles | orderBy:'folder'">
+      <tr class="sortable" ng-repeat="file in FM.curFiles | orderBy:'!folder'" ng-if="!searchString || file.name.toLowerCase().includes(searchString.toLowerCase())">
         <td><input type="checkbox" value="{{file.name}}" ng-model="file.selected"></td>
-        <td ng-click="FM.clickFile(file)"><span class="{{file.folder ? 'glyphicon glyphicon-folder-open' : 'glyphicon glyphicon-file'}}"></span></td>
-        <td ng-click="FM.clickFile(file)"><a>{{file.name}}</a></td>
-        <td>{{file.humanSize}}</td>
+        <td ng-click="file.folder && FM.clickFile(file)"><span class="{{file.folder ? 'glyphicon glyphicon-folder-open' : 'glyphicon glyphicon-file'}}"></span></td>
+        <td ng-click="file.folder && FM.clickFile(file)"><a ng-if="file.folder">{{file.name}}</a><a ng-if="!file.folder" href="http://filestore.jamesgittins.com{{file.relPath}}">{{file.name}}</a></td>
+        <td>{{file.folder ? '' : file.humanSize}}</td>
         <td>{{file.humanTime}}</td>
       </tr>
       </tbody>
@@ -149,6 +150,12 @@
       {{FM.errorData}}
     </div>
 
+  </div>
+
+  <div class="footer">
+    <div class="container">
+      <p class="text-muted text-center">Based on <a href="https://github.com/efeiefei/node-file-manager">Node File Manager</a></p>
+    </div>
   </div>
 
 </body>
